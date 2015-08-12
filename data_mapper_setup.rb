@@ -1,4 +1,5 @@
 require 'data_mapper'
+require 'dm-validations'
 
 env = ENV['RACK_ENV'] || 'development'
 
@@ -6,6 +7,7 @@ DataMapper.setup(:default, ENV['DATABASE_2'] || "postgres://localhost/bookmark_m
 
 require './app/models/link'
 require './app/models/tag'
+require './app/models/user'
 
 DataMapper.finalize
 
