@@ -1,2 +1,6 @@
-<h1>Welcome to BookmarkManager!</h1>
-<a href='/links'>Please click here to view & edit your existing links</a>
+<% if flash[:notice] %>
+  <div id="notice"><%= flash[:notice] %></div>
+<% else %>
+  <h1>Welcome to BookmarkManager!</h1>
+  <a href='/links'>Please click here to view & edit your existing links</a>
+<% end %>

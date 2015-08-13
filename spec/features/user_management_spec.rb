@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 feature 'User sign-up' do
   #strictly speaking, tests that check UI (ie. have_content) should be separate
   #from the tests that check what we have in the DB - because these are separate
@@ -36,22 +38,6 @@ feature 'User sign-up' do
     user = create :user
     sign_in(user)
     expect(page).to have_content "Welcome, #{user.email}"
-  end
-
-  def sign_up(user)
-    visit 'users/new'
-    expect(page.status_code).to eq(200)
-    fill_in :email,   with: user.email
-    fill_in :password, with: user.password
-    fill_in :password_confirmation, with: user.password_confirmation
-    click_button 'Sign up'
-  end
-
-  def sign_in(user)
-    visit '/sessions/new'
-    fill_in :email, with: user.email
-    fill_in :password, with: user.password
-    click_button 'Sign me in!'
   end
 
 end
