@@ -14,6 +14,7 @@ class User
   # test passwords; the model WON'T save unless the password matches the
   # confirmation
   validates_confirmation_of :password
+  validates_uniqueness_of :email
 
   def password=(password)
     @password = password

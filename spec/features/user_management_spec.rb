@@ -4,31 +4,40 @@ feature 'User sign-up' do
   #concerns & we should only test one concern at a time
 
   scenario 'I can sign up as a new user' do
-    expect{ sign_up }.to change(User, :count).by(1)
+    user = build(:user)
+    expect{ sign_up(user) }.to change(User, :count).by(1)
     expect(page).to have_content('Welcome, alice@example.com')
     expect(User.first.email).to eq('alice@example.com')
   end
 
   scenario 'when the passwords do not match' do
-    expect{ sign_up(password_confirmation: 'wrong') }.not_to change(User, :count)
+    user = build(:user, password_confirmation: 'wrong')
+    expect{ sign_up(user) }.not_to change(User, :count)
     expect(current_path).to eq('/users') #current_path is a Capybara helper
-    expect(page).to have_content 'Password and confirmation do not match'
+    expect(page).to have_content 'Password does not match the confirmation'
   end
 
   scenario 'when the user does not provide an email' do
-    expect{ sign_up(email: '') }.not_to change(User, :count)
+    user = build(:user, email: '')
+    expect{ sign_up(user) }.not_to change(User, :count)
     expect(current_path).to eq('/users') #current_path is a Capybara helper
-    expect(page).to have_content 'You must provide a valid email address'
+    expect(page).to have_content 'Email must not be blank'
   end
 
-  def sign_up(email: 'alice@example.com',
-              password: '1234567',
-              password_confirmation: '1234567')
+  scenario 'I cannot sign up with an existing email' do
+    user = create(:user)
+    sign_up(user)
+    expect { sign_up(user) }.not_to change(User, :count)
+    expect(current_path).to eq('/users')
+    expect(page).to have_content 'Email is already taken'
+  end
+
+  def sign_up(user)
     visit 'users/new'
     expect(page.status_code).to eq(200)
-    fill_in :email,   with: email
-    fill_in :password, with: password
-    fill_in :password_confirmation, with: password_confirmation
+    fill_in :email,   with: user.email
+    fill_in :password, with: user.password
+    fill_in :password_confirmation, with: user.password_confirmation
     click_button 'Sign up'
   end
 
