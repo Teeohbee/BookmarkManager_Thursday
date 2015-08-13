@@ -32,6 +32,12 @@ feature 'User sign-up' do
     expect(page).to have_content 'Email is already taken'
   end
 
+  scenario 'user can sign in' do
+    user = create :user
+    sign_in(user)
+    expect(page).to have_content "Welcome, #{user.email}"
+  end
+
   def sign_up(user)
     visit 'users/new'
     expect(page.status_code).to eq(200)
@@ -39,6 +45,13 @@ feature 'User sign-up' do
     fill_in :password, with: user.password
     fill_in :password_confirmation, with: user.password_confirmation
     click_button 'Sign up'
+  end
+
+  def sign_in(user)
+    visit '/sessions/new'
+    fill_in :email, with: user.email
+    fill_in :password, with: user.password
+    click_button 'Sign me in!'
   end
 
 end
