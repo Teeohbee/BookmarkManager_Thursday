@@ -15,6 +15,12 @@ feature 'User sign-up' do
     expect(page).to have_content 'Password and confirmation do not match'
   end
 
+  scenario 'when the user does not provide an email' do
+    expect{ sign_up(email: '') }.not_to change(User, :count)
+    expect(current_path).to eq('/users') #current_path is a Capybara helper
+    expect(page).to have_content 'You must provide a valid email address'
+  end
+
   def sign_up(email: 'alice@example.com',
               password: '1234567',
               password_confirmation: '1234567')
@@ -25,4 +31,5 @@ feature 'User sign-up' do
     fill_in :password_confirmation, with: password_confirmation
     click_button 'Sign up'
   end
+
 end
