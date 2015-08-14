@@ -47,6 +47,10 @@ class BookmarkManager < Sinatra::Base
     end
   end
 
+  get '/users/password_reset' do
+    erb :'users/password_reset'
+  end
+
   get '/sessions/new' do
     erb :'sessions/new'
   end

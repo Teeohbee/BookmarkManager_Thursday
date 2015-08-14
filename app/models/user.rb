@@ -9,6 +9,7 @@ class User
   property :id,   Serial
   property :email,String, required: true
   property :password_digest, Text
+  property :password_token, Text
 
   # validates_confirmation_of is a DataMapper method specifically there to
   # test passwords; the model WON'T save unless the password matches the
