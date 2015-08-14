@@ -3,7 +3,7 @@ require 'sinatra/flash'
 require_relative '../data_mapper_setup'
 
 class BookmarkManager < Sinatra::Base
-  use Rack::MethodOverride #This allows us to use a 'delete' method in our
+  use Rack::MethodOverride # This allows us to use a 'delete' method in our
   # server file --> browsers won't allow delete requests otherwise
   enable :sessions
   register Sinatra::Flash
@@ -31,8 +31,8 @@ class BookmarkManager < Sinatra::Base
   post '/users' do
     # use .new to avoid saving if the passwords don't match
     @user = User.new(email: params[:email],
-                password: params[:password],
-                password_confirmation: params[:password_confirmation])
+                     password: params[:password],
+                     password_confirmation: params[:password_confirmation])
     if @user.save
       session[:user_id] = @user.id
       redirect('/links')
@@ -51,6 +51,13 @@ class BookmarkManager < Sinatra::Base
     erb :'users/password_reset'
   end
 
+  post '/users/password_reset' do
+    reset_email = params[:email]
+    User.reset_password(reset_email)
+    flash.now[:notice] = 'Thank you. Please check your emails for a reset link.'
+    erb :'users/password_reset'
+  end
+
   get '/sessions/new' do
     erb :'sessions/new'
   end
@@ -61,14 +68,14 @@ class BookmarkManager < Sinatra::Base
       session[:user_id] = user.id
       redirect to('/links')
     else
-      flash.now[:errors] = ["The email and/or password you provided are incorrect"]
+      flash.now[:errors] = ['The email and/or password you provided are incorrect']
       erb :'/sessions/new'
     end
   end
 
   delete '/sessions' do
     session[:user_id] = nil
-    flash.now[:notice] = "You are now signed out. Have a nice day!"
+    flash.now[:notice] = 'You are now signed out. Have a nice day!'
     erb :welcome
   end
 
@@ -83,7 +90,7 @@ class BookmarkManager < Sinatra::Base
 
   post '/links' do
     link = Link.new(url: params[:url], title: params[:title])
-    params[:tag].empty? ? tag_array = ["Untagged"] : tag_array = params[:tag].split(', ')
+    params[:tag].empty? ? tag_array = ['Untagged'] : tag_array = params[:tag].split(', ')
     tag_array.each do |tag|
       new_tag = Tag.create(name: tag.capitalize)
       link.tags << new_tag
@@ -99,5 +106,5 @@ class BookmarkManager < Sinatra::Base
   end
 
   # start the server if ruby file executed directly
-  run! if app_file == $0
+  run! if app_file == $PROGRAM_NAME
 end

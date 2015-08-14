@@ -7,7 +7,7 @@ class User
   attr_accessor :password_confirmation
 
   property :id,   Serial
-  property :email,String, required: true
+  property :email, String, required: true
   property :password_digest, Text
   property :password_token, Text
 
@@ -31,4 +31,9 @@ class User
     end
   end
 
+  def self.reset_password(email)
+    user = first(email: email)
+    user.password_token = "QWERTYUIOP"
+    user.save
+  end
 end
